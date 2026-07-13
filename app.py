@@ -569,12 +569,7 @@ def status():
     })
 
 # ── Application Entry Point ───────────────────────────────────────────────────
-if __name__ == "__main__":
-    print("=" * 60)
-    print("  🏋️  FITNESS BUDDY — AI Health Coach")
-    print("  Powered by IBM Watsonx.ai & Granite Models")
-    print("=" * 60)
-    initialize_watsonx()
-    port = int(os.getenv("PORT", 5000))
-    debug = os.getenv("FLASK_DEBUG", "False").lower() == "true"
-    app.run(host="0.0.0.0", port=port, debug=debug)
+import os
+
+port = int(os.environ.get("PORT", 5000))
+app.run(host="0.0.0.0", port=port)
