@@ -1,0 +1,20 @@
+# ══════════════════════════════════════════════════════
+#  FITNESS BUDDY — Python Dependencies
+#  IBM Watsonx.ai Powered | Flask Backend
+# ══════════════════════════════════════════════════════
+
+# ── Core Web Framework ─────────────────────────────────
+Flask==3.0.3
+flask-cors==4.0.1
+
+# ── IBM Watsonx.ai SDK (Granite Models) ───────────────
+ibm-watsonx-ai==1.5.14
+
+# ── Environment & Configuration ───────────────────────
+python-dotenv==1.0.1
+
+# ── Production WSGI Server ────────────────────────────
+gunicorn==22.0.0
+
+# ── Security ──────────────────────────────────────────
+Werkzeug==3.0.3
