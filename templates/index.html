@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fitness Buddy 💪 — AI Health Coach</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
+  <!-- Custom CSS -->
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ═══════════════════  TOP NAVBAR  ═══════════════════ -->
+<nav class="navbar navbar-expand-lg fixed-top fb-navbar">
+  <div class="container-fluid px-3">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <div class="brand-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+      <span class="brand-text">Fitness Buddy</span>
+    </a>
+
+    <div class="d-flex align-items-center gap-2 ms-auto">
+      <!-- Dark mode toggle -->
+      <button class="btn btn-icon theme-toggle" id="themeToggle" title="Toggle dark mode">
+        <i class="bi bi-moon-fill" id="themeIcon"></i>
+      </button>
+      <!-- Status dot -->
+      <span class="status-badge" id="statusBadge">
+        <span class="status-dot"></span>AI Online
+      </span>
+      <!-- Profile button -->
+      <button class="btn btn-sm btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#profileModal">
+        <i class="bi bi-person-circle me-1"></i><span id="navProfileName">My Profile</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════  MAIN LAYOUT  ═══════════════════ -->
+<div class="app-container">
+
+  <!-- ── Left Sidebar ───────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-tab="chat">
+        <i class="bi bi-chat-dots-fill"></i><span>AI Chat</span>
+      </button>
+      <button class="nav-btn" data-tab="dashboard">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+      </button>
+      <button class="nav-btn" data-tab="workout">
+        <i class="bi bi-lightning-charge-fill"></i><span>Workouts</span>
+      </button>
+      <button class="nav-btn" data-tab="calories">
+        <i class="bi bi-calculator-fill"></i><span>Calories</span>
+      </button>
+      <button class="nav-btn" data-tab="meals">
+        <i class="bi bi-egg-fried"></i><span>Meal Planner</span>
+      </button>
+      <button class="nav-btn" data-tab="family">
+        <i class="bi bi-people-fill"></i><span>Family</span>
+      </button>
+    </nav>
+
+    <!-- Quick stats in sidebar -->
+    <div class="sidebar-stats mt-auto">
+      <div class="stat-mini" id="sidebarBmi">
+        <i class="bi bi-graph-up-arrow"></i>
+        <span id="sideBmiVal">BMI: --</span>
+      </div>
+      <div class="stat-mini" id="sidebarGoal">
+        <i class="bi bi-bullseye"></i>
+        <span id="sideGoalVal">Goal: Not set</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- ════════  TAB: AI CHAT  ════════ -->
+    <section class="tab-panel active" id="tab-chat">
+      <div class="chat-wrapper">
+        <!-- Chat header -->
+        <div class="chat-header">
+          <div class="chat-avatar"><i class="bi bi-heart-pulse-fill"></i></div>
+          <div>
+            <div class="chat-title">Fitness Buddy</div>
+            <div class="chat-subtitle">Your AI Health Coach • Powered by IBM Granite</div>
+          </div>
+          <button class="btn btn-sm ms-auto btn-ghost" id="clearChatBtn" title="Clear chat">
+            <i class="bi bi-trash3"></i>
+          </button>
+        </div>
+
+        <!-- Messages area -->
+        <div class="chat-messages" id="chatMessages">
+          <!-- Welcome message -->
+          <div class="message bot-message">
+            <div class="msg-avatar"><i class="bi bi-heart-pulse-fill"></i></div>
+            <div class="msg-bubble">
+              <p>Namaste! 🙏 I'm your <strong>Fitness Buddy</strong>, powered by IBM Watsonx.ai!</p>
+              <p>I can help you with:</p>
+              <div class="quick-features">
+                <span class="feature-chip"><i class="bi bi-lightning-charge"></i> Workout Plans</span>
+                <span class="feature-chip"><i class="bi bi-calculator"></i> Calorie Tracking</span>
+                <span class="feature-chip"><i class="bi bi-egg-fried"></i> Meal Suggestions</span>
+                <span class="feature-chip"><i class="bi bi-people"></i> Family Fitness</span>
+              </div>
+              <p class="mt-2">What's your fitness goal today? 💪</p>
+              <span class="msg-time">Just now</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick action chips -->
+        <div class="quick-actions" id="quickActions">
+          <button class="qa-chip" data-msg="Give me a quick 20-minute home workout for beginners">🏠 Home Workout</button>
+          <button class="qa-chip" data-msg="What should I eat for weight loss? I'm vegetarian">🥗 Veg Diet Plan</button>
+          <button class="qa-chip" data-msg="I want to lose weight. Create a plan for me">⚖️ Lose Weight</button>
+          <button class="qa-chip" data-msg="Suggest yoga exercises I can do every morning">🧘 Morning Yoga</button>
+          <button class="qa-chip" data-msg="I feel tired all day. What exercises will give me more energy?">⚡ More Energy</button>
+          <button class="qa-chip" data-msg="Create a family fitness plan for 2 adults and 1 child (10 years)">👨‍👩‍👧 Family Plan</button>
+        </div>
+
+        <!-- Chat input -->
+        <div class="chat-input-area">
+          <div class="chat-input-box">
+            <textarea id="chatInput" placeholder="Ask me anything about fitness, nutrition, or wellness…" rows="1"></textarea>
+            <button class="send-btn" id="sendBtn">
+              <i class="bi bi-send-fill"></i>
+            </button>
+          </div>
+          <div class="input-hint">Press Enter to send • Shift+Enter for new line</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════  TAB: DASHBOARD  ════════ -->
+    <section class="tab-panel" id="tab-dashboard">
+      <div class="panel-header">
+        <h2><i class="bi bi-speedometer2 me-2 text-primary"></i>Fitness Dashboard</h2>
+        <p class="text-muted">Your health overview at a glance</p>
+      </div>
+
+      <!-- BMI Calculator Card -->
+      <div class="row g-3 mb-4">
+        <div class="col-lg-5">
+          <div class="card fb-card h-100">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-activity me-2 text-primary"></i>BMI Calculator</h5>
+              <div class="row g-2">
+                <div class="col-6">
+                  <label class="form-label small">Weight (kg)</label>
+                  <input type="number" class="form-control" id="bmiWeight" placeholder="65" min="20" max="300" />
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">Height (cm)</label>
+                  <input type="number" class="form-control" id="bmiHeight" placeholder="170" min="100" max="250" />
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">Age</label>
+                  <input type="number" class="form-control" id="bmiAge" placeholder="25" min="5" max="100" />
+                </div>
+                <div class="col-6 d-flex align-items-end">
+                  <button class="btn btn-primary w-100" id="calcBmiBtn">Calculate</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="card fb-card h-100" id="bmiResultCard" style="display:none!important">
+            <div class="card-body text-center">
+              <div class="bmi-circle" id="bmiCircle">
+                <span class="bmi-number" id="bmiNumber">--</span>
+                <span class="bmi-label">BMI</span>
+              </div>
+              <div class="bmi-category mt-2" id="bmiCategory">--</div>
+              <div class="bmi-advice mt-1 text-muted small" id="bmiAdvice"></div>
+              <div class="ideal-weight mt-2 small" id="idealWeight"></div>
+            </div>
+          </div>
+          <div class="card fb-card h-100" id="bmiPlaceholder">
+            <div class="card-body d-flex align-items-center justify-content-center">
+              <div class="text-center text-muted">
+                <i class="bi bi-person-bounding-box" style="font-size:3rem;opacity:.3"></i>
+                <p class="mt-2 small">Enter your details to see BMI analysis</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Cards Row -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+          <div class="stat-card stat-blue">
+            <i class="bi bi-fire"></i>
+            <div class="stat-value" id="dashCalories">1,800</div>
+            <div class="stat-label">Daily Cal Goal</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card stat-green">
+            <i class="bi bi-droplet-half"></i>
+            <div class="stat-value" id="dashWater">8</div>
+            <div class="stat-label">Glasses Water</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card stat-orange">
+            <i class="bi bi-clock"></i>
+            <div class="stat-value" id="dashWorkout">30</div>
+            <div class="stat-label">Min/Workout</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card stat-purple">
+            <i class="bi bi-moon-stars"></i>
+            <div class="stat-value" id="dashSleep">7-8</div>
+            <div class="stat-label">Hours Sleep</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exercise Calorie Burner -->
+      <div class="card fb-card mb-3">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-fire me-2 text-danger"></i>Exercise Calorie Burner</h5>
+          <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+              <label class="form-label small">Exercise Type</label>
+              <select class="form-select" id="exerciseType">
+                <option value="walking">Walking</option>
+                <option value="brisk walking">Brisk Walking</option>
+                <option value="running">Running</option>
+                <option value="jogging">Jogging</option>
+                <option value="cycling">Cycling</option>
+                <option value="yoga">Yoga</option>
+                <option value="surya namaskar">Surya Namaskar</option>
+                <option value="strength training">Strength Training</option>
+                <option value="hiit">HIIT</option>
+                <option value="dancing">Dancing</option>
+                <option value="skipping">Skipping/Jump Rope</option>
+                <option value="swimming">Swimming</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small">Duration (min)</label>
+              <input type="number" class="form-control" id="exerciseDuration" value="30" min="5" max="180" />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small">Your Weight (kg)</label>
+              <input type="number" class="form-control" id="exerciseWeight" placeholder="65" />
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-danger w-100" id="calcBurnBtn">Calculate</button>
+            </div>
+          </div>
+          <div id="burnResult" class="mt-3" style="display:none">
+            <div class="burn-result-card">
+              <i class="bi bi-fire text-danger"></i>
+              <span id="burnCalories" class="burn-number">0</span>
+              <span class="burn-unit">kcal burned</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Tips -->
+      <div class="card fb-card">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-lightbulb-fill me-2 text-warning"></i>Daily Wellness Tips</h5>
+          <div class="tips-grid" id="tipsGrid">
+            <div class="tip-item"><i class="bi bi-droplet-fill text-info"></i><span>Drink 8-10 glasses of water daily — start with a glass of warm water with lemon every morning</span></div>
+            <div class="tip-item"><i class="bi bi-sun-fill text-warning"></i><span>Try 12 rounds of Surya Namaskar — burns ~150 cal and boosts metabolism</span></div>
+            <div class="tip-item"><i class="bi bi-moon-fill text-primary"></i><span>Sleep 7-8 hours — poor sleep increases cortisol and leads to weight gain</span></div>
+            <div class="tip-item"><i class="bi bi-egg-fill text-success"></i><span>Include protein in every meal — dal, paneer, eggs, or sprouts for muscle repair</span></div>
+            <div class="tip-item"><i class="bi bi-watch text-danger"></i><span>Break long sitting hours — stand or walk for 5 minutes every hour</span></div>
+            <div class="tip-item"><i class="bi bi-heart-fill text-danger"></i><span>Practice deep breathing (Pranayama) for 10 mins daily to reduce stress</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════  TAB: WORKOUT PLANNER  ════════ -->
+    <section class="tab-panel" id="tab-workout">
+      <div class="panel-header">
+        <h2><i class="bi bi-lightning-charge-fill me-2 text-warning"></i>Workout Planner</h2>
+        <p class="text-muted">AI-generated personalized exercise routines</p>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-5">
+          <div class="card fb-card">
+            <div class="card-body">
+              <h5 class="card-title">Customize Your Workout</h5>
+
+              <div class="mb-3">
+                <label class="form-label">Fitness Goal</label>
+                <select class="form-select" id="workoutGoal">
+                  <option value="weight loss">Weight Loss</option>
+                  <option value="muscle building">Muscle Building</option>
+                  <option value="general fitness" selected>General Fitness</option>
+                  <option value="improve flexibility">Flexibility & Mobility</option>
+                  <option value="stress relief">Stress Relief / Mindfulness</option>
+                  <option value="improve stamina">Build Stamina & Endurance</option>
+                  <option value="back pain relief">Back Pain Relief</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Fitness Level</label>
+                <div class="fitness-level-btns">
+                  <button class="level-btn active" data-level="beginner">Beginner</button>
+                  <button class="level-btn" data-level="intermediate">Intermediate</button>
+                  <button class="level-btn" data-level="advanced">Advanced</button>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Focus Area</label>
+                <select class="form-select" id="focusArea">
+                  <option value="full body">Full Body</option>
+                  <option value="upper body">Upper Body</option>
+                  <option value="lower body">Lower Body</option>
+                  <option value="core and abs">Core & Abs</option>
+                  <option value="cardio">Cardio</option>
+                  <option value="yoga and stretching">Yoga & Stretching</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Duration: <strong id="durationLabel">30 min</strong></label>
+                <input type="range" class="form-range" id="workoutDuration" min="15" max="90" step="5" value="30" />
+                <div class="d-flex justify-content-between small text-muted">
+                  <span>15 min</span><span>90 min</span>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Available Equipment</label>
+                <select class="form-select" id="equipment">
+                  <option value="none (bodyweight only)">None (Bodyweight Only)</option>
+                  <option value="resistance bands">Resistance Bands</option>
+                  <option value="dumbbells">Dumbbells</option>
+                  <option value="yoga mat">Yoga Mat</option>
+                  <option value="full gym">Full Gym</option>
+                </select>
+              </div>
+
+              <button class="btn btn-primary w-100 btn-lg" id="generateWorkoutBtn">
+                <i class="bi bi-lightning-charge-fill me-2"></i>Generate AI Workout Plan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="card fb-card h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">Your Workout Plan</h5>
+                <button class="btn btn-sm btn-outline-success" id="copyWorkoutBtn" style="display:none">
+                  <i class="bi bi-clipboard me-1"></i>Copy
+                </button>
+              </div>
+              <div id="workoutResult" class="ai-result-area">
+                <div class="empty-state">
+                  <i class="bi bi-lightning-charge"></i>
+                  <p>Configure your preferences and tap <strong>Generate</strong> to get your personalized workout plan!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════  TAB: CALORIE CALCULATOR  ════════ -->
+    <section class="tab-panel" id="tab-calories">
+      <div class="panel-header">
+        <h2><i class="bi bi-calculator-fill me-2 text-success"></i>Calorie Calculator</h2>
+        <p class="text-muted">Track your daily nutrition with Indian food database</p>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-5">
+          <div class="card fb-card">
+            <div class="card-body">
+              <h5 class="card-title">Add Food Items</h5>
+              <div class="d-flex gap-2 mb-2">
+                <input type="text" class="form-control" id="foodName" placeholder="e.g. dal, roti, paneer…" />
+                <input type="number" class="form-control w-25" id="foodQty" placeholder="Qty" value="1" min="0.1" step="0.1" />
+                <button class="btn btn-success" id="addFoodBtn"><i class="bi bi-plus-lg"></i></button>
+              </div>
+              <div class="food-chips mb-3" id="foodChips">
+                <!-- Common foods quick-add -->
+                <span class="food-tag" data-food="roti" data-qty="2">Roti ×2</span>
+                <span class="food-tag" data-food="dal" data-qty="1">Dal ×1</span>
+                <span class="food-tag" data-food="rice" data-qty="1">Rice ×1</span>
+                <span class="food-tag" data-food="paneer" data-qty="1">Paneer</span>
+                <span class="food-tag" data-food="curd" data-qty="1">Curd</span>
+                <span class="food-tag" data-food="banana" data-qty="1">Banana</span>
+                <span class="food-tag" data-food="egg" data-qty="2">Eggs ×2</span>
+                <span class="food-tag" data-food="milk" data-qty="1">Milk</span>
+                <span class="food-tag" data-food="chai" data-qty="2">Chai ×2</span>
+              </div>
+
+              <!-- Food list -->
+              <div id="foodList" class="food-list mb-3"></div>
+
+              <div class="d-flex gap-2">
+                <button class="btn btn-primary flex-grow-1" id="calcNutritionBtn">
+                  <i class="bi bi-calculator me-1"></i>Calculate Nutrition
+                </button>
+                <button class="btn btn-outline-danger" id="clearFoodBtn">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <!-- Nutrition results -->
+          <div class="card fb-card mb-3" id="nutritionResultCard" style="display:none">
+            <div class="card-body">
+              <h5 class="card-title"><i class="bi bi-bar-chart-fill me-2 text-success"></i>Nutrition Summary</h5>
+              <div class="macro-grid" id="macroGrid"></div>
+              <div class="macro-bars mt-3" id="macroBars"></div>
+            </div>
+          </div>
+
+          <!-- AI Analysis -->
+          <div class="card fb-card" id="nutritionAnalysisCard" style="display:none">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="card-title mb-0"><i class="bi bi-robot me-2 text-primary"></i>AI Nutrition Analysis</h5>
+                <button class="btn btn-sm btn-primary" id="analyzeNutritionBtn">
+                  <i class="bi bi-stars me-1"></i>Analyze with AI
+                </button>
+              </div>
+              <div id="nutritionAnalysis" class="ai-result-area small"></div>
+            </div>
+          </div>
+
+          <div class="card fb-card" id="caloriePlaceholder">
+            <div class="card-body d-flex align-items-center justify-content-center" style="min-height:200px">
+              <div class="text-center text-muted">
+                <i class="bi bi-egg-fried" style="font-size:3rem;opacity:.3"></i>
+                <p class="mt-2 small">Add foods to see calorie breakdown and AI analysis</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════  TAB: MEAL PLANNER  ════════ -->
+    <section class="tab-panel" id="tab-meals">
+      <div class="panel-header">
+        <h2><i class="bi bi-egg-fried me-2 text-warning"></i>Meal Planner</h2>
+        <p class="text-muted">AI-powered Indian meal suggestions for your goals</p>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-4">
+          <div class="card fb-card">
+            <div class="card-body">
+              <h5 class="card-title">Meal Preferences</h5>
+
+              <div class="mb-3">
+                <label class="form-label">Diet Type</label>
+                <select class="form-select" id="mealDiet">
+                  <option value="vegetarian">Vegetarian</option>
+                  <option value="vegan">Vegan</option>
+                  <option value="non-vegetarian">Non-Vegetarian</option>
+                  <option value="jain vegetarian">Jain Vegetarian</option>
+                  <option value="eggetarian">Eggetarian</option>
+                  <option value="diabetic friendly">Diabetic Friendly</option>
+                  <option value="low sodium">Low Sodium / Heart Healthy</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Health Goal</label>
+                <select class="form-select" id="mealGoal">
+                  <option value="weight loss">Weight Loss</option>
+                  <option value="weight gain">Weight Gain / Muscle</option>
+                  <option value="balanced nutrition" selected>Balanced Nutrition</option>
+                  <option value="energy boost">Energy Boost</option>
+                  <option value="gut health">Gut Health</option>
+                  <option value="immunity boost">Immunity Boost</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Target Calories: <strong id="mealCalLabel">1800</strong> kcal</label>
+                <input type="range" class="form-range" id="mealCalTarget" min="1200" max="3000" step="50" value="1800" />
+                <div class="d-flex justify-content-between small text-muted">
+                  <span>1200</span><span>3000</span>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Meal Plan Type</label>
+                <select class="form-select" id="mealType">
+                  <option value="full day">Full Day Plan</option>
+                  <option value="breakfast">Breakfast Only</option>
+                  <option value="lunch">Lunch Only</option>
+                  <option value="dinner">Dinner Only</option>
+                  <option value="pre-workout">Pre-Workout Snack</option>
+                  <option value="post-workout">Post-Workout Meal</option>
+                </select>
+              </div>
+
+              <button class="btn btn-warning w-100 btn-lg text-dark fw-bold" id="generateMealBtn">
+                <i class="bi bi-stars me-2"></i>Generate Meal Plan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <div class="card fb-card h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">AI Meal Suggestions</h5>
+                <button class="btn btn-sm btn-outline-success" id="copyMealBtn" style="display:none">
+                  <i class="bi bi-clipboard me-1"></i>Copy Plan
+                </button>
+              </div>
+              <div id="mealResult" class="ai-result-area">
+                <div class="empty-state">
+                  <i class="bi bi-egg-fried"></i>
+                  <p>Choose your preferences and tap <strong>Generate</strong> for a personalized Indian meal plan!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════  TAB: FAMILY PROFILES  ════════ -->
+    <section class="tab-panel" id="tab-family">
+      <div class="panel-header">
+        <h2><i class="bi bi-people-fill me-2 text-info"></i>Family Fitness Profiles</h2>
+        <p class="text-muted">Personalized fitness plans for every family member</p>
+      </div>
+
+      <!-- Add family member -->
+      <div class="card fb-card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Add Family Member</h5>
+          <div class="row g-2">
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="famName" placeholder="Name" />
+            </div>
+            <div class="col-md-2">
+              <input type="number" class="form-control" id="famAge" placeholder="Age" min="1" max="100" />
+            </div>
+            <div class="col-md-2">
+              <select class="form-select" id="famGender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="famHealth" placeholder="Health conditions (if any)" />
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-info w-100 text-white" id="addFamilyBtn">
+                <i class="bi bi-person-plus-fill me-1"></i>Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Family members list -->
+      <div id="familyList" class="row g-3 mb-3">
+        <div class="col-12">
+          <div class="empty-state card fb-card">
+            <div class="card-body text-center text-muted py-4">
+              <i class="bi bi-people" style="font-size:3rem;opacity:.3"></i>
+              <p class="mt-2">No family members added yet. Add your first family member above!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Family plan result -->
+      <div class="card fb-card" id="familyPlanCard" style="display:none">
+        <div class="card-body">
+          <h5 class="card-title"><i class="bi bi-stars me-2 text-warning"></i>AI Fitness Plan</h5>
+          <div id="familyPlanResult" class="ai-result-area"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ═══════════════════  PROFILE MODAL  ═══════════════════ -->
+<div class="modal fade" id="profileModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content fb-modal">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-person-circle me-2 text-primary"></i>My Fitness Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-6">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" id="profileName" placeholder="Your name" />
+          </div>
+          <div class="col-6">
+            <label class="form-label">Age</label>
+            <input type="number" class="form-control" id="profileAge" placeholder="25" min="5" max="100" />
+          </div>
+          <div class="col-6">
+            <label class="form-label">Gender</label>
+            <select class="form-select" id="profileGender">
+              <option value="">Select</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label">Weight (kg)</label>
+            <input type="number" class="form-control" id="profileWeight" placeholder="65" />
+          </div>
+          <div class="col-6">
+            <label class="form-label">Height (cm)</label>
+            <input type="number" class="form-control" id="profileHeight" placeholder="170" />
+          </div>
+          <div class="col-6">
+            <label class="form-label">Activity Level</label>
+            <select class="form-select" id="profileActivity">
+              <option value="sedentary">Sedentary (desk job)</option>
+              <option value="light">Light (1-2 days/week)</option>
+              <option value="moderate" selected>Moderate (3-5 days/week)</option>
+              <option value="active">Active (daily workout)</option>
+              <option value="very active">Very Active (athlete)</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Primary Fitness Goal</label>
+            <select class="form-select" id="profileGoal">
+              <option value="weight loss">Weight Loss</option>
+              <option value="muscle building">Muscle Building</option>
+              <option value="general fitness" selected>General Fitness</option>
+              <option value="improve flexibility">Flexibility</option>
+              <option value="improve stamina">Endurance</option>
+              <option value="stress relief">Stress Relief</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Diet Preference</label>
+            <select class="form-select" id="profileDiet">
+              <option value="vegetarian" selected>Vegetarian</option>
+              <option value="vegan">Vegan</option>
+              <option value="non-vegetarian">Non-Vegetarian</option>
+              <option value="jain">Jain Vegetarian</option>
+              <option value="eggetarian">Eggetarian</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Health Conditions (optional)</label>
+            <input type="text" class="form-control" id="profileHealth" placeholder="e.g. diabetes, knee pain, hypertension…" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveProfileBtn">
+          <i class="bi bi-check-circle me-1"></i>Save Profile
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════  LOADING OVERLAY  ═══════════════════ -->
+<div class="loading-overlay" id="loadingOverlay" style="display:none">
+  <div class="loading-content">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">AI is thinking…</div>
+    <div class="loading-sub">IBM Watsonx.ai • Granite Model</div>
+  </div>
+</div>
+
+<!-- ═══════════════════  TOAST NOTIFICATIONS  ═══════════════════ -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="appToast" class="toast align-items-center border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="toastMessage">Saved successfully!</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Scripts ──────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
