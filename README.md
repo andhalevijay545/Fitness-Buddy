@@ -1,3 +1,5 @@
+PPT LINK:https://1drv.ms/p/c/BB63A2F89C1DE2AB/IQDGAyGAxnuETahWszEaqenEAS2Hk8BXNTLKhj65vY2z8cU?e=gxj6ZB
+
 # ══════════════════════════════════════════════════════════════════════════════
 # 🏋️  FITNESS BUDDY — Complete Deployment Guide
 # AI-Powered Health Coach | IBM Watsonx.ai + Granite + Flask
